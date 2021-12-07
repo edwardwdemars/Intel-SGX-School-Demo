@@ -56,17 +56,6 @@ int printf(const char *fmt, ...)
     ocall_print_string(buf);
     return (int)strnlen(buf, BUFSIZ - 1) + 1;
 }
-void fill_mem()
-{
-    uint64_t page_size = getpagesize();
-    void *ret = NULL;
-    int count = 0;
-    while (true)
-    {
-        ret = sgx_alloc_rsrv_mem(page_size);
-        printf("%d\n", count++);
-    }
-}
 //searches for a class by its id
 Class *find_class(int id)
 {
@@ -127,26 +116,28 @@ int new_student(int n)
     char *str;
     for (int i = 0; i < n; i++)
     {
-        ocall_print_string("Enter student ID\n");
+        printf("Enter student ID\n");
         ocall_enter_int(&id);
+        printf("Got id");
         printf("id: %d \n", id);
         (address + i)->id = id;
         printf("id assigned\n");
-        ocall_print_string("Enter first name\n");
+        printf("Enter first name\n");
         ocall_enter_string(address->first_name);
-        ocall_print_string("Enter last name\n");
+        printf("Enter last name\n");
         ocall_enter_string(address->last_name);
-        ocall_print_string("How many classes have they taken?\n");
+        printf("How many classes have they taken?\n");
         int m;
         ocall_enter_int(&m);
         for (int j = 0; j < m; j++)
         {
-            ocall_print_string("Enter ID of class\n");
+            printf("Entered for loop\n");
+            printf("Enter ID of class\n");
             ocall_enter_int(&id);
             Class *c = find_class(id);
             if (c == NULL)
             {
-                ocall_print_string("No class found, creating new class\n");
+                printf("No class found, creating new class\n");
                 int ret = new_class(1);
                 if (ret == 0)
                 {
@@ -172,13 +163,16 @@ int new_student(int n)
                 (address + i)->last_class->next_class = pclass;
             }
             (address + i)->last_class = pclass;
-            ocall_print_string("Enter the student's percentage in this class\n");
+            printf("Enter the student's percentage in this class\n");
             ocall_enter_int(&id);
             pclass->percentage = id;
-            ocall_print_string("Enter any comments from the professor\n");
+            printf("Enter any comments from the professor\n");
             ocall_enter_string(pclass->comments);
+            printf("Assigned comments\n");
         }
+        printf("Before gpa");
         (address + i)->gpa = calc_gpa(address + i);
+        printf("Calced gpa");
         if (first_student == NULL)
         {
             printf("Entered if statement\n");
@@ -188,6 +182,7 @@ int new_student(int n)
         }
         else
         {
+            printf("Entered else statement");
             int assigned = 0;
             current_student = first_student;
             while (assigned == 0)
@@ -216,27 +211,29 @@ int new_class(int n)
     printf("Allocated memory\n");
     printf("%x\n", (int *)address);
     int id;
+    //bug occurrs when first id is larger than the second, when asking for third id gets stuck asking for input
+    printf("Enter classes in ascending order of ID");
     for (int i = 0; i < n; i++)
     {
-        ocall_print_string("Enter Class ID\n");
+        printf("Enter Class ID\n");
         ocall_enter_int(&id);
         while (find_class(id) != NULL)
         {
-            ocall_print_string("ID already taken, enter another\n");
+            printf("ID already taken, enter another\n");
             ocall_enter_int(&id);
         }
         printf("id: %d \n", id);
         (address + i)->id = id;
         printf("id assigned\n");
-        ocall_print_string("Enter class name\n");
+        printf("Enter class name\n");
         ocall_enter_string((address + i)->name);
-        ocall_print_string("Enter professor first name\n");
+        printf("Enter professor first name\n");
         ocall_enter_string((address + i)->professor_first);
-        ocall_print_string("Enter professor last name\n");
+        printf("Enter professor last name\n");
         ocall_enter_string((address + i)->professor_last);
-        ocall_print_string("Enter class description\n");
+        printf("Enter class description\n");
         ocall_enter_string((address + i)->description);
-        ocall_print_string("Enter number of credits class is worth\n");
+        printf("Enter number of credits class is worth\n");
         ocall_enter_int(&id);
         printf("Got credits\n");
         (address + i)->credits = id;
@@ -325,12 +322,13 @@ int public_print_student(int id)
     }
     return 0;
 }
-void print_class(Class *address){
-    printf("Student ID: %d\n", address->id);
+void print_class(Class *address)
+{
+    printf("Class ID: %d\n", address->id);
     printf("Name: %s\n", address->name);
     printf("Professor: %s %s\n", address->professor_first, address->professor_last);
     printf("Description: %s\n", address->description);
-    printf("Credits: %d", address->credits);
+    printf("Credits: %d\n", address->credits);
 }
 int print_all_classes()
 {

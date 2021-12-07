@@ -51,7 +51,6 @@ enclave {
          * Utilize SGX version __cpuid() in enclave.
          */
         public void ecall_sgx_cpuid([out] int cpuinfo[4], int leaf);
-        public void fill_mem();
         public int new_student(int n);
         public int new_class(int n);
         public void print_all_students();

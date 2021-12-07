@@ -177,21 +177,32 @@ void ocall_print_string(const char *str)
 }
 void ocall_enter_int(int *ptr){
     puts("Enter Integer");
-    scanf(" %d", ptr);
-    printf("%d\n", *ptr);
+    char buffer[ID_SIZE];
+    char* end;
+    int n;
+    puts("Stuff declared");
+    fgets(buffer, ID_SIZE, stdin);
+    n = strtol(buffer, &end, 10);
+    printf("%d\n", n);
+    *ptr = n;
+    puts("ptr assigned");
+    printf("Hi %d\n", *ptr);
+    //new class id bug seems to get stuck here
 }
 void ocall_enter_string(char *ptr){
     puts("Enter String");
-    scanf(" %s", ptr);
+    fgets(ptr, COMMENT_SIZE, stdin);
     printf("%s\n", ptr);
 }
 void menu(){
     char input = '1';
     while(input != '0'){
-        puts("Please enter your selection:\n0 to quit\n1 to enter new students\n2 to enter new classes");
-        input = getchar();
+        puts("Please enter your selection:\n0 to quit\n1 to enter new students\n2 to enter new classes\n3 to print a specific studnet\n4 to print all students\n5 to print a specific class\n6 to print all classes.");
+        input = fgetc(stdin);
         int n;
         int ret;
+        char buffer[50];
+        char** end;
         switch (input)
         {
         //quit
@@ -201,13 +212,17 @@ void menu(){
         //Add student
         case '1':
             puts("How many students would you like to add?");
-            scanf(" %d", &n);
+            getchar();
+            fgets(buffer, ID_SIZE, stdin);
+            n = strtol(buffer, end, 10);
             ret = new_student(global_eid, 0, n);
             break;
         //Add class
         case '2':
             puts("How many classes would you like to add?");
-            scanf(" %d",&n);
+            getchar();
+            fgets(buffer, ID_SIZE, stdin);
+            n = strtol(buffer, end, 10);
             ret = new_class(global_eid, 0, n);
             break;
         case '3':

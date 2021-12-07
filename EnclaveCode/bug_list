@@ -1,0 +1,3 @@
+1. Strings entered into enclave only return first character
+2. if first class entered has a larger id than the second class, then program will infinitely ask for input upon entering id of third class
+3. When adding second student, either individually or together, segfault after comments are assigned, after exiting for loop, but before calculating the gpa, where nothing exists.
